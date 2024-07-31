@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+    <!-- Select all hstest -->
+    <select id="selectAllHstest" resultType="Hstest">
+        SELECT * FROM hstest
+    </select>
+
+    <!-- Select hstest by id -->
+    <select id="selectHstest" parameterType="[]int64" resultType="Hstest">
+        SELECT * FROM hstest WHERE id &lt; #{id} and age &lt; #{age}
+    </select>
+
+    <select id="selectHstestByMap" parameterType="map" resultType="Hstest">
+        SELECT * FROM hstest WHERE id &lt; #{id} and age &lt; #{age}
+    </select>
+
+    <select id="selectHstestByList" parameterType="[]int64" resultType="Hstest">
+        SELECT * FROM hstest WHERE id &lt; #{id} and age &lt; #{age}
+    </select>
+
+    <!-- Select hstest1 by id -->
+    <select id="selectHstestById" parameterType="map" resultType="Hstest">
+        SELECT * FROM hstest  WHERE id &lt; #{id} and age &lt; #{age}
+    </select>
+
+    <select id="selectHstest1" parameterType="int64" resultType="hstest1">
+        SELECT * FROM hstest1  order by id desc limit #{limit}
+    </select>
+
+    <!-- Insert a new hstest1 -->
+    <insert id="insertHstest1" parameterType="Hstest1">
+        INSERT INTO hstest1 (rowname, value, goto) VALUES (#{rowname}, #{value}, #{goto})
+    </insert>
+
+    <!-- Update an existing hstest1 -->
+    <update id="updateHstest1" parameterType="Hstest1">
+        UPDATE hstest1 SET rowname=#{rowname},value=#{value},goto=#{goto}  WHERE id = #{id}
+    </update>
+
+    <!-- Delete a hstest1 by id -->
+    <delete id="deleteHstest1" parameterType="Hstest1">
+        DELETE FROM hstest1 WHERE id = #{id}
+    </delete>
+
+</mapper>
