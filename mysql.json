@@ -1,0 +1,8 @@
+{
+  "dbtype": "mysql",
+  "dbhost": "localhost",
+  "dbport": 3306,
+  "dbname": "hstest",
+  "dbuser": "root",
+  "dbpwd": "123"
+}
