@@ -1,0 +1,8 @@
+{
+  "dbtype": "sqlite",
+  "dbhost": "",
+  "dbport":0,
+  "dbname": "hstest.db",
+  "dbuser": "",
+  "dbpwd": ""
+}
