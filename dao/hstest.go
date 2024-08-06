@@ -5,9 +5,9 @@
 //
 // github.com/donnie4w/gdao
 //
-// datetime :2024-07-26 16:30:05
+// datetime :2024-08-03 11:09:32
 // gdao version 1.1.0
-// dbtype:sqlite ,database:hstest.db ,tablename:hstest
+// dbtype:mysql ,database:hstest ,tablename:hstest
 
 package dao
 
