@@ -1,14 +1,21 @@
-package main
+package gdaodemo
 
-import "database/sql"
+import (
+	"database/sql"
+	"path/filepath"
+)
 
 type dataSource struct {
 }
 
-var DataSource *dataSource = &dataSource{}
+var DataSource = &dataSource{}
 
 func (d *dataSource) Mysql() *sql.DB {
-	if db, err := getDataSource("mysql.json"); err == nil {
+	cfg := "mysql.json"
+	if RootDir != "" {
+		cfg = filepath.Join(RootDir, cfg)
+	}
+	if db, err := getDataSource(cfg); err == nil {
 		return db
 	} else {
 		panic(err)
@@ -16,7 +23,11 @@ func (d *dataSource) Mysql() *sql.DB {
 }
 
 func (d *dataSource) Sqlite() *sql.DB {
-	if db, err := getDataSource("sqlite.json"); err == nil {
+	cfg := "sqlite.json"
+	if RootDir != "" {
+		cfg = filepath.Join(RootDir, cfg)
+	}
+	if db, err := getDataSource(cfg); err == nil {
 		return db
 	} else {
 		panic(err)
@@ -24,7 +35,12 @@ func (d *dataSource) Sqlite() *sql.DB {
 }
 
 func (d *dataSource) PostgrepSql() *sql.DB {
-	if db, err := getDataSource("postgre.json"); err == nil {
+
+	cfg := "postgres.json"
+	if RootDir != "" {
+		cfg = filepath.Join(RootDir, cfg)
+	}
+	if db, err := getDataSource(cfg); err == nil {
 		return db
 	} else {
 		panic(err)
