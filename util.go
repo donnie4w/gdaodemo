@@ -1,4 +1,4 @@
-package main
+package gdaodemo
 
 import (
 	"database/sql"
@@ -8,8 +8,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
+	"path/filepath"
 	"strings"
 )
+
+var RootDir = ""
 
 var logger = logging.NewLogger().SetFormat(logging.FORMAT_LEVELFLAG | logging.FORMAT_TIME).SetFormatter("{time}{level}{message}\n")
 
@@ -44,6 +47,9 @@ func openDB(driver string, config *ConfBean) (DB *sql.DB, err error) {
 		DB, err = sql.Open("postgres", dataSourceName)
 	case "sqlite":
 		dataSourceName = config.DbName
+		if RootDir != "" {
+			dataSourceName = filepath.Join(RootDir, dataSourceName)
+		}
 		DB, err = sql.Open("sqlite3", dataSourceName)
 	default:
 		err = fmt.Errorf("Unsupported driver: %s", driver)
