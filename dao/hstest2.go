@@ -5,7 +5,7 @@
 //
 // github.com/donnie4w/gdao
 //
-// datetime :2024-07-26 16:30:05
+// datetime :2024-08-16 13:52:41
 // gdao version 1.1.0
 // dbtype:sqlite ,database:hstest.db ,tablename:hstest2
 
@@ -13,288 +13,170 @@ package dao
 
 import (
 	"fmt"
-	"github.com/donnie4w/gdao/base"
 	"github.com/donnie4w/gdao"
+	"github.com/donnie4w/gdao/base"
 	"time"
 )
-type hstest2_Id[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *int64
-}
-
-func (t *hstest2_Id[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Id[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Name[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *string
-}
-
-func (t *hstest2_Name[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Name[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Age[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *int64
-}
-
-func (t *hstest2_Age[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Age[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Createtime[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue time.Time
-}
-
-func (t *hstest2_Createtime[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Createtime[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Money[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *float64
-}
-
-func (t *hstest2_Money[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Money[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Bytes[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue []byte
-}
-
-func (t *hstest2_Bytes[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Bytes[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Floa[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *float64
-}
-
-func (t *hstest2_Floa[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Floa[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Level[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *int64
-}
-
-func (t *hstest2_Level[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Level[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Type[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *float64
-}
-
-func (t *hstest2_Type[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Type[T]) Value() any {
-	return t.fieldValue
-}
-
-type hstest2_Flog[T any] struct {
-	base.Field[T]
-	fieldName  string
-	fieldValue *float64
-}
-
-func (t *hstest2_Flog[T]) Name() string {
-	return t.fieldName
-}
-
-func (t *hstest2_Flog[T]) Value() any {
-	return t.fieldValue
-}
 
 type Hstest2 struct {
 	gdao.Table[Hstest2]
 
-	Id		*hstest2_Id[Hstest2]
-	Name		*hstest2_Name[Hstest2]
-	Age		*hstest2_Age[Hstest2]
-	Createtime		*hstest2_Createtime[Hstest2]
-	Money		*hstest2_Money[Hstest2]
-	Bytes		*hstest2_Bytes[Hstest2]
-	Floa		*hstest2_Floa[Hstest2]
-	Level		*hstest2_Level[Hstest2]
-	Type		*hstest2_Type[Hstest2]
-	Flog		*hstest2_Flog[Hstest2]
+	ID      *base.Field[Hstest2]
+	NAME      *base.Field[Hstest2]
+	AGE      *base.Field[Hstest2]
+	CREATETIME      *base.Field[Hstest2]
+	MONEY      *base.Field[Hstest2]
+	BYTES      *base.Field[Hstest2]
+	FLOA      *base.Field[Hstest2]
+	LEVEL      *base.Field[Hstest2]
+	TYPE      *base.Field[Hstest2]
+	FLOG      *base.Field[Hstest2]
+	_ID      *int64
+	_NAME      *string
+	_AGE      *int64
+	_CREATETIME      time.Time
+	_MONEY      *float64
+	_BYTES      []byte
+	_FLOA      *float64
+	_LEVEL      *int64
+	_TYPE      *float64
+	_FLOG      *float64
 }
 
+var _Hstest2_ID = &base.Field[Hstest2]{"id"}
+var _Hstest2_NAME = &base.Field[Hstest2]{"name"}
+var _Hstest2_AGE = &base.Field[Hstest2]{"age"}
+var _Hstest2_CREATETIME = &base.Field[Hstest2]{"createtime"}
+var _Hstest2_MONEY = &base.Field[Hstest2]{"money"}
+var _Hstest2_BYTES = &base.Field[Hstest2]{"bytes"}
+var _Hstest2_FLOA = &base.Field[Hstest2]{"floa"}
+var _Hstest2_LEVEL = &base.Field[Hstest2]{"level"}
+var _Hstest2_TYPE = &base.Field[Hstest2]{"type"}
+var _Hstest2_FLOG = &base.Field[Hstest2]{"flog"}
+
 func (u *Hstest2) GetId() (_r int64){
-	if u.Id.fieldValue != nil {
-		_r = *u.Id.fieldValue
+	if u._ID != nil {
+		_r = *u._ID
 	}
 	return
 }
 
 func (u *Hstest2) SetId(arg int64) *Hstest2{
-	u.Put0(u.Id.fieldName, arg)
-	u.Id.fieldValue = &arg
+	u.Put0(u.ID.FieldName, arg)
+	u._ID = &arg
 	return u
 }
 
 func (u *Hstest2) GetName() (_r string){
-	if u.Name.fieldValue != nil {
-		_r = *u.Name.fieldValue
+	if u._NAME != nil {
+		_r = *u._NAME
 	}
 	return
 }
 
 func (u *Hstest2) SetName(arg string) *Hstest2{
-	u.Put0(u.Name.fieldName, arg)
-	u.Name.fieldValue = &arg
+	u.Put0(u.NAME.FieldName, arg)
+	u._NAME = &arg
 	return u
 }
 
 func (u *Hstest2) GetAge() (_r int64){
-	if u.Age.fieldValue != nil {
-		_r = *u.Age.fieldValue
+	if u._AGE != nil {
+		_r = *u._AGE
 	}
 	return
 }
 
 func (u *Hstest2) SetAge(arg int64) *Hstest2{
-	u.Put0(u.Age.fieldName, arg)
-	u.Age.fieldValue = &arg
+	u.Put0(u.AGE.FieldName, arg)
+	u._AGE = &arg
 	return u
 }
 
 func (u *Hstest2) GetCreatetime() (_r time.Time){
-	_r = u.Createtime.fieldValue
+	_r = u._CREATETIME
 	return
 }
 
 func (u *Hstest2) SetCreatetime(arg time.Time) *Hstest2{
-	u.Put0(u.Createtime.fieldName, arg)
-	u.Createtime.fieldValue = arg
+	u.Put0(u.CREATETIME.FieldName, arg)
+	u._CREATETIME = arg
 	return u
 }
 
 func (u *Hstest2) GetMoney() (_r float64){
-	if u.Money.fieldValue != nil {
-		_r = *u.Money.fieldValue
+	if u._MONEY != nil {
+		_r = *u._MONEY
 	}
 	return
 }
 
 func (u *Hstest2) SetMoney(arg float64) *Hstest2{
-	u.Put0(u.Money.fieldName, arg)
-	u.Money.fieldValue = &arg
+	u.Put0(u.MONEY.FieldName, arg)
+	u._MONEY = &arg
 	return u
 }
 
 func (u *Hstest2) GetBytes() (_r []byte){
-	_r = u.Bytes.fieldValue
+	_r = u._BYTES
 	return
 }
 
 func (u *Hstest2) SetBytes(arg []byte) *Hstest2{
-	u.Put0(u.Bytes.fieldName, arg)
-	u.Bytes.fieldValue = arg
+	u.Put0(u.BYTES.FieldName, arg)
+	u._BYTES = arg
 	return u
 }
 
 func (u *Hstest2) GetFloa() (_r float64){
-	if u.Floa.fieldValue != nil {
-		_r = *u.Floa.fieldValue
+	if u._FLOA != nil {
+		_r = *u._FLOA
 	}
 	return
 }
 
 func (u *Hstest2) SetFloa(arg float64) *Hstest2{
-	u.Put0(u.Floa.fieldName, arg)
-	u.Floa.fieldValue = &arg
+	u.Put0(u.FLOA.FieldName, arg)
+	u._FLOA = &arg
 	return u
 }
 
 func (u *Hstest2) GetLevel() (_r int64){
-	if u.Level.fieldValue != nil {
-		_r = *u.Level.fieldValue
+	if u._LEVEL != nil {
+		_r = *u._LEVEL
 	}
 	return
 }
 
 func (u *Hstest2) SetLevel(arg int64) *Hstest2{
-	u.Put0(u.Level.fieldName, arg)
-	u.Level.fieldValue = &arg
+	u.Put0(u.LEVEL.FieldName, arg)
+	u._LEVEL = &arg
 	return u
 }
 
 func (u *Hstest2) GetType() (_r float64){
-	if u.Type.fieldValue != nil {
-		_r = *u.Type.fieldValue
+	if u._TYPE != nil {
+		_r = *u._TYPE
 	}
 	return
 }
 
 func (u *Hstest2) SetType(arg float64) *Hstest2{
-	u.Put0(u.Type.fieldName, arg)
-	u.Type.fieldValue = &arg
+	u.Put0(u.TYPE.FieldName, arg)
+	u._TYPE = &arg
 	return u
 }
 
 func (u *Hstest2) GetFlog() (_r float64){
-	if u.Flog.fieldValue != nil {
-		_r = *u.Flog.fieldValue
+	if u._FLOG != nil {
+		_r = *u._FLOG
 	}
 	return
 }
 
 func (u *Hstest2) SetFlog(arg float64) *Hstest2{
-	u.Put0(u.Flog.fieldName, arg)
-	u.Flog.fieldValue = &arg
+	u.Put0(u.FLOG.FieldName, arg)
+	u._FLOG = &arg
 	return u
 }
 
@@ -327,8 +209,7 @@ func (u *Hstest2) Scan(fieldname string, value any) {
 }
 
 func (t *Hstest2) ToGdao() {
-	_t := NewHstest2()
-	*t = *_t
+	t.init("hstest2")
 }
 
 func (t *Hstest2) Copy(h *Hstest2) *Hstest2{
@@ -349,44 +230,27 @@ func (t *Hstest2) String() string {
 	return fmt.Sprint("Id:",t.GetId(), ",","Name:",t.GetName(), ",","Age:",t.GetAge(), ",","Createtime:",t.GetCreatetime(), ",","Money:",t.GetMoney(), ",","Bytes:",t.GetBytes(), ",","Floa:",t.GetFloa(), ",","Level:",t.GetLevel(), ",","Type:",t.GetType(), ",","Flog:",t.GetFlog())
 }
 
+func (t *Hstest2)init(tablename string) {
+	t.ID = _Hstest2_ID
+	t.NAME = _Hstest2_NAME
+	t.AGE = _Hstest2_AGE
+	t.CREATETIME = _Hstest2_CREATETIME
+	t.MONEY = _Hstest2_MONEY
+	t.BYTES = _Hstest2_BYTES
+	t.FLOA = _Hstest2_FLOA
+	t.LEVEL = _Hstest2_LEVEL
+	t.TYPE = _Hstest2_TYPE
+	t.FLOG = _Hstest2_FLOG
+	t.Init(tablename, []base.Column[Hstest2]{t.ID,t.NAME,t.AGE,t.CREATETIME,t.MONEY,t.BYTES,t.FLOA,t.LEVEL,t.TYPE,t.FLOG})
+}
+
 func NewHstest2(tablename ...string) (_r *Hstest2) {
-
-	id := &hstest2_Id[Hstest2]{fieldName: "id"}
-	id.Field.FieldName = "id"
-
-	name := &hstest2_Name[Hstest2]{fieldName: "name"}
-	name.Field.FieldName = "name"
-
-	age := &hstest2_Age[Hstest2]{fieldName: "age"}
-	age.Field.FieldName = "age"
-
-	createtime := &hstest2_Createtime[Hstest2]{fieldName: "createtime"}
-	createtime.Field.FieldName = "createtime"
-
-	money := &hstest2_Money[Hstest2]{fieldName: "money"}
-	money.Field.FieldName = "money"
-
-	bytes := &hstest2_Bytes[Hstest2]{fieldName: "bytes"}
-	bytes.Field.FieldName = "bytes"
-
-	floa := &hstest2_Floa[Hstest2]{fieldName: "floa"}
-	floa.Field.FieldName = "floa"
-
-	level := &hstest2_Level[Hstest2]{fieldName: "level"}
-	level.Field.FieldName = "level"
-
-	type_ := &hstest2_Type[Hstest2]{fieldName: "type"}
-	type_.Field.FieldName = "type"
-
-	flog := &hstest2_Flog[Hstest2]{fieldName: "flog"}
-	flog.Field.FieldName = "flog"
-
-	_r = &Hstest2{Id:id,Name:name,Age:age,Createtime:createtime,Money:money,Bytes:bytes,Floa:floa,Level:level,Type:type_,Flog:flog}
+	_r = &Hstest2{}
 	s := "hstest2"
 	if len(tablename) > 0 && tablename[0] != "" {
 		s = tablename[0]
 	}
-	_r.Init(s, []base.Column[Hstest2]{id,name,age,createtime,money,bytes,floa,level,type_,flog})
+	_r.init(s)
 	return
 }
 
