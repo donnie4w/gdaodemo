@@ -5,15 +5,15 @@ import (
 )
 
 type Hs1 struct {
-	id         int64
+	Id         int64
 	Rowname    string
 	Value      []byte
 	Goto       []byte
-	updatetime time.Time
+	Updatetime time.Time
 }
 
 func (this *Hs1) GetId() int64 {
-	return this.id
+	return this.Id
 }
 func (this *Hs1) GetRowname() string {
 	return this.Rowname
@@ -31,14 +31,14 @@ func (this *Hs1) SetGoto(v []byte) {
 	this.Goto = v
 }
 func (this *Hs1) SetId(id int64) {
-	this.id = id
+	this.Id = id
 }
 func (this *Hs1) SetRowname(rowname string) {
 	this.Rowname = rowname
 }
 func (this *Hs1) SetUpdatetime(t time.Time) {
-	this.updatetime = t
+	this.Updatetime = t
 }
 func (this *Hs1) GetUpdatetime() time.Time {
-	return this.updatetime
+	return this.Updatetime
 }
