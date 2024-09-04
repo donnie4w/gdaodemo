@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dynamic">
+
+    <!-- where if -->
+    <select id="demo1" resultType="Hstest">
+        SELECT * FROM hstest
+        <where>
+            <if test="rowname== 'hello'">
+                and rowname = #{rowname}
+            </if>
+            <if test="id >0">
+                AND id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <!-- trim -->
+    <select id="demo2" resultType="Hstest">
+        SELECT * FROM hstest
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="rowname != null">
+                AND rowname = #{rowname}
+            </if>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- foreach -->
+    <select id="demo3" resultType="Hstest">
+        SELECT * FROM hstest where 1=1 and id in
+        <foreach collection="list" item="id" index="index" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- foreach -->
+    <select id="demo4" resultType="Hstest">
+        SELECT * FROM hstest where 1=1 and id in
+        <foreach collection="hstest" item="item" index="index" separator="," open="(" close=")">
+            <if test="item.id > 0">
+                #{item.id}
+            </if>
+        </foreach>
+    </select>
+
+    <!-- foreach -->
+    <select id="demo5" resultType="Hstest">
+        SELECT * FROM hstest where 1=1 and id in
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            <!-- index>=2 && index <=5 特殊符号需转义 -->
+            <if test="index >= 2 &amp;&amp; index &lt;= 5">
+                #{item}
+            </if>
+        </foreach>
+    </select>
+
+    <!-- choose -->
+    <select id="demo6" resultType="Hstest">
+        SELECT * FROM hstest where 1=1
+        <choose>
+            <when test="rowname == 'hello'">
+                and rowname = #{rowname}
+            </when>
+            <when test="id > 0">
+                AND id = #{id}
+            </when>
+            <otherwise>
+                AND id = 1
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- set -->
+    <update id="dome7">
+        UPDATE hstest1
+        <set>
+            <trim suffixOverrides=",">
+                <if test="rowname != null">
+                    rowname = #{rowname},
+                </if>
+                <if test="value != null">
+                    value = #{value},
+                </if>
+                <if test="goto != null">
+                    goto = #{goto},
+                </if>
+            </trim>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+</mapper>
