@@ -4,5 +4,6 @@
     <mappers>
         <mapper resource="mapper.xml"/>
         <mapper resource="mapper2.xml"/>
+        <mapper resource="dynamic.xml"/>
     </mappers>
 </configuration>
