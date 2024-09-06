@@ -1,54 +1,52 @@
-package main
+package gdaodemo
 
 import (
 	"fmt"
 	"github.com/donnie4w/gdao"
 	"github.com/donnie4w/gdao/gdaoCache"
-	"github.com/donnie4w/gdao/gdaoSlave"
 	"github.com/donnie4w/gdaodemo/dao"
 	"testing"
 	"time"
 )
 
 func init() {
-	gdao.Init(DataSource.Mysql(), gdao.MYSQL)
+	gdao.Init(DataSource.Sqlite(), gdao.SQLITE)
 	gdao.SetLogger(true)
 	logger.Info("datasource init")
 }
 
 func TestSelect(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where(hs.Id.EQ(10))
-	h, _ := hs.Select(hs.Id, hs.Value, hs.Rowname)
-	logger.Debug(h)
-	bean, _ := gdao.ExecuteQueryBean("select id,value,rowname from hstest where id=?", 10)
+	hs.Where(hs.ID.EQ(3))
+	h, err := hs.Select(hs.ID, hs.VALUE, hs.ROWNAME)
+	logger.Debug(h, err)
+	bean := gdao.ExecuteQueryBean("select id,value,rowname from hstest where id=?", 11)
 	logger.Debug(bean)
 }
 
 func TestSelect2(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where(hs.Rowname.RLIKE(1)).GroupBy(hs.Id).Having(hs.Id.Count().LT(2)).Limit(2)
+	hs.Where(hs.ROWNAME.RLIKE(1)).GroupBy(hs.ID).Having(hs.ID.Count().LT(2)).Limit(2)
 	hslist, _ := hs.Selects()
 	for _, h := range hslist {
 		logger.Debug(h)
 	}
-
-	bean, _ := gdao.ExecuteQueryBean("select id,value,rowname from hstest where id=?", 10)
+	bean := gdao.ExecuteQueryBean("select id,value,rowname from hstest where id=?", 11)
 	logger.Debug(bean)
 }
 
 func TestUpdate(t *testing.T) {
 	hs := dao.NewHstest()
 	hs.SetRowname("hello10")
-	hs.Where(hs.Id.EQ(10))
+	hs.Where(hs.ID.EQ(10))
 	hs.Update()
-	bean, _ := gdao.ExecuteQueryBean("select id,value,rowname from hstest where id=?", 10)
+	bean := gdao.ExecuteQueryBean("select id,value,rowname from hstest where id=?", 13)
 	logger.Debug(bean)
 }
 
 func TestDelete(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where(hs.Id.EQ(50))
+	hs.Where(hs.ID.EQ(50))
 	hs.Update()
 }
 
@@ -62,16 +60,16 @@ func TestInsert(t *testing.T) {
 	hs.SetFloa(123456)
 	hs.SetAge(123)
 	hs.Insert()
-	bean, _ := gdao.ExecuteQueryBean("select * from hstest order by id desc limit ?", 1)
+	bean := gdao.ExecuteQueryBean("select * from hstest order by id desc limit ?", 1)
 	logger.Debug(bean)
 }
 
 func TestSelects(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 5)).Or(hs.Id.Between(10, 60)))
-	hs.GroupBy(hs.Id)
-	hs.Having(hs.Id.Count().LE(2))
-	hs.OrderBy(hs.Id.Asc())
+	hs.Where((hs.ID.Between(0, 5)).Or(hs.ID.Between(10, 60)))
+	hs.GroupBy(hs.ID)
+	hs.Having(hs.ID.Count().LE(2))
+	hs.OrderBy(hs.ID.Asc())
 	hs.Limit2(1, 10)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -84,8 +82,8 @@ func TestSelects(t *testing.T) {
 
 func TestSelects2(t *testing.T) {
 	hs := dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
+	hs.Where(hs.ID.Between(0, 5))
+	hs.OrderBy(hs.ID.Desc())
 	hs.Limit(5)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -95,8 +93,8 @@ func TestSelects2(t *testing.T) {
 		logger.Debug("err>>>>", err)
 	}
 	logger.Debug("---------------------Gdao Hstest1---------------------")
-	if beans, err := gdao.ExecuteQueryBeans("select id,rowname,value,goto from hstest1 where id between ? and ? order by id desc  LIMIT ? OFFSET ?", 0, 5, 10, 1); err == nil {
-		for _, bean := range beans {
+	if beans := gdao.ExecuteQueryBeans("select id,rowname,value,goto from hstest1 where id between ? and ? order by id desc  LIMIT ? OFFSET ?", 0, 5, 10, 1); beans.GetError() == nil {
+		for _, bean := range beans.Beans {
 			logger.Debug(bean)
 		}
 	}
@@ -104,32 +102,22 @@ func TestSelects2(t *testing.T) {
 }
 
 func TestSelectScan(t *testing.T) {
-	hslist := make([]*dao.Hs1, 0)
-	if beans, err := gdao.ExecuteQueryBeans("select id,rowname,value,goto from hstest1 where id between ? and ? order by id desc  LIMIT ? OFFSET ?", 0, 5, 10, 1); err == nil {
-		for _, bean := range beans {
-			logger.Debug(bean)
-			if h1, err := gdao.Scan[dao.Hs1](bean); err == nil {
-				hslist = append(hslist, h1)
-			}
-		}
+	var hslist []*dao.Hs1
+	if beans := gdao.ExecuteQueryBeans("select id,rowname,value,goto from hstest1 where id between ? and ? order by id desc  LIMIT ? OFFSET ?", 0, 5, 10, 1); beans.GetError() == nil {
+		fmt.Println(beans.Scan(&hslist))
 	}
 	logger.Debug("---------------------DataBean---------------------")
 
 	for _, h1 := range hslist {
 		logger.Debug(h1)
 	}
-	logger.Debug("---------------------Scan Hs1---------------------")
+	logger.Debug("---------------------scan []*dao.Hs1---------------------")
 }
 
 func TestSelectScan2(t *testing.T) {
 	hslist := make([]*dao.Hs1, 0)
-	if beans, err := gdao.ExecuteQueryBeans("select * from hstest where id between ? and ? order by id desc  LIMIT ? OFFSET ?", 0, 5, 10, 1); err == nil {
-		for _, bean := range beans {
-			logger.Debug(bean)
-			if h1, err := gdao.Scan[dao.Hs1](bean); err == nil {
-				hslist = append(hslist, h1)
-			}
-		}
+	if beans := gdao.ExecuteQueryBeans("select * from hstest where id between ? and ? order by id desc  LIMIT ? OFFSET ?", 0, 5, 10, 1); beans.GetError() == nil {
+		fmt.Println(beans.Scan(&hslist))
 	}
 	logger.Debug("---------------------DataBean---------------------")
 
@@ -137,7 +125,7 @@ func TestSelectScan2(t *testing.T) {
 		logger.Debug(h1)
 		logger.Debug(h1.GetUpdatetime().Format("2006-01-02 15:04:05"))
 	}
-	logger.Debug("---------------------Scan Hs1---------------------")
+	logger.Debug("---------------------scan []*dao.Hs1---------------------")
 
 }
 
@@ -190,9 +178,9 @@ DELIMITER ;
 */
 func TestCall(t *testing.T) {
 	dbhandle := gdao.NewDBHandle(DataSource.Mysql(), gdao.MYSQL)
-	dbs, err := dbhandle.ExecuteQueryBeans("call proc_hs(?)", 3)
-	fmt.Println(err)
-	for _, db := range dbs {
+	dbs := dbhandle.ExecuteQueryBeans("call proc_hs(?)", 3)
+	fmt.Println(dbs.GetError())
+	for _, db := range dbs.Beans {
 		fmt.Println(db)
 	}
 }
@@ -241,7 +229,7 @@ func Test_transaction(t *testing.T) {
 	hs.UseTransaction(tx)
 	hs.SetAge(100)
 	hs.SetName("www123")
-	hs.Where(hs.Id.EQ(1))
+	hs.Where(hs.ID.EQ(1))
 	hs.Update()
 
 	hs2 := dao.NewHstest2()
@@ -249,7 +237,7 @@ func Test_transaction(t *testing.T) {
 	hs2.UseTransaction(tx)
 	hs2.SetAge(101)
 	hs2.SetName("www234")
-	hs2.Where(hs.Id.EQ(2))
+	hs2.Where(hs.ID.EQ(2))
 	hs2.Update()
 
 	//事务对象可以直接调用CRUD函数
@@ -264,25 +252,20 @@ func Test_transaction(t *testing.T) {
 }
 
 func TestGdao(t *testing.T) {
-	if datas, err := gdao.ExecuteQueryBeans("select * from hstest where id  < ?", 5); err == nil {
-		for _, data := range datas {
+	if datas := gdao.ExecuteQueryBeans("select * from hstest where id  < ?", 5); datas.GetError() == nil {
+		for _, data := range datas.Beans {
 			logger.Debug(data)
 		}
 	} else {
-		logger.Debug("err>>>", err)
+		logger.Debug("err>>>", datas.GetError())
 	}
 }
 
 func Test_Scan(t *testing.T) {
-	gbs, err := gdao.ExecuteQueryBeans("select * from hstest1 limit ?", 5)
-	if err != nil {
-		logger.Debug(err.Error())
-	}
-	for _, dataBean := range gbs {
-		if hs, err := gdao.Scan[dao.Hstest1](dataBean); err == nil {
-			logger.Debug(hs)
-		} else {
-			logger.Debug("err>>>>", err)
+	var hss []*dao.Hstest1
+	if err := gdao.ExecuteQueryBeans("select * from hstest1 limit ?", 5).Scan(&hss); err == nil {
+		for _, hs := range hss {
+			fmt.Println(hs)
 		}
 	}
 }
@@ -321,26 +304,18 @@ func Test_Scan3(t *testing.T) {
 		Level      int64
 		Type       float64
 	}
-	gbs, err := gdao.ExecuteQueryBeans("select * from hstest2 limit ?,?", 10, 5)
-	if err != nil {
-		logger.Debug(err.Error())
-	}
-	if gbs == nil {
-		logger.Debug("no result")
-		return
-	}
-	for _, dataBean := range gbs {
-		if hs, err := gdao.Scan[dao.Hs1](dataBean); err == nil {
-			logger.Debug(hs)
-		} else {
-			logger.Debug("err>>>>", err)
+	if gbs := gdao.ExecuteQueryBeans("select * from hstest2 limit ?,?", 10, 5); gbs.GetError() == nil {
+		for _, dataBean := range gbs.Beans {
+			var hs dao.Hs1
+			dataBean.Scan(&hs)
+			logger.Debug(&hs)
 		}
 	}
 }
 
 func Test_serialize(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where(hs.Id.EQ(1))
+	hs.Where(hs.ID.EQ(1))
 	hs1, _ := hs.Select() //任意查询一条数据，作为序列化的数据准备
 	bs, _ := hs1.Encode() //调用Encode 实现对象序列化
 	logger.Debug("encode len(bs):", len(bs))
@@ -354,7 +329,7 @@ func Test_serialize(t *testing.T) {
 
 func Test_copy(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where(hs.Id.EQ(1))
+	hs.Where(hs.ID.EQ(1))
 	hs1, _ := hs.Select() //任意查询一条数据，作为f复杂的数据准备
 	logger.Debug(hs1)
 	hs2 := dao.NewHstest()
@@ -365,7 +340,7 @@ func Test_copy(t *testing.T) {
 func TestCacheTablename(t *testing.T) {
 	gdaoCache.BindTableNames("hstest") //set cache for Hstest
 	hs := dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 2)).Or(hs.Id.Between(10, 15)))
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(1)
 	if hs, err := hs.Select(); err == nil {
 		logger.Debug(hs)
@@ -373,7 +348,7 @@ func TestCacheTablename(t *testing.T) {
 	logger.Debug("----------------------Set Cache----------------------")
 	println()
 	hs = dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 2)).Or(hs.Id.Between(10, 15)))
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(1)
 	if hs, err := hs.Select(); err == nil {
 		logger.Debug(hs)
@@ -382,7 +357,7 @@ func TestCacheTablename(t *testing.T) {
 	println()
 	gdaoCache.UnbindTableNames("hstest")
 	hs = dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 2)).Or(hs.Id.Between(10, 15)))
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(1)
 	if hs, err := hs.Select(); err == nil {
 		logger.Debug(hs)
@@ -391,9 +366,10 @@ func TestCacheTablename(t *testing.T) {
 }
 
 func TestCacheClass(t *testing.T) {
-	gdaoCache.BindClassWithCacheHandle[dao.Hstest](gdaoCache.NewCacheHandle().SetExpire(100).SetStoreMode(gdaoCache.STRONG)) //set cache for Hstest
+	gdaoCache.BindClassWithCacheHandle[*dao.Hstest](gdaoCache.NewCacheHandle().SetExpire(100).SetStoreMode(gdaoCache.STRONG)) //set cache for Hstest
 	hs := dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 2)).Or(hs.Id.Between(10, 15)))
+
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -403,7 +379,7 @@ func TestCacheClass(t *testing.T) {
 	logger.Debug("----------------------Set Cache----------------------")
 	println()
 	hs = dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 2)).Or(hs.Id.Between(10, 15)))
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -412,9 +388,10 @@ func TestCacheClass(t *testing.T) {
 	}
 	logger.Debug("----------------------Get Cache----------------------")
 	println()
-	gdaoCache.UnbindClass[dao.Hstest]()
+	//gdaoCache.UnbindClass[dao.Hstest]()
+	gdaoCache.ClearClass[dao.Hstest]()
 	hs = dao.NewHstest()
-	hs.Where((hs.Id.Between(0, 2)).Or(hs.Id.Between(10, 15)))
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -424,66 +401,11 @@ func TestCacheClass(t *testing.T) {
 	logger.Debug("----------------------No Use Cache----------------------")
 }
 
-func TestSlave(t *testing.T) {
-	gdaoSlave.BindClass[dao.Hstest1](DataSource.Mysql(), gdao.MYSQL)
-	hs := dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
-	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil {
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	logger.Debug("----------------------Bind the hstest table to the slave data source mysql----------------------")
-	println()
-	gdaoSlave.UnbindClass[dao.Hstest1]()
-
-	gdaoSlave.UnbindClass[dao.Hstest1]()
-	hs = dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
-	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil {
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	logger.Debug("----------------------gdaoslave unbinds the hstest table----------------------")
-	println()
-}
-
-func TestSlaveTable(t *testing.T) {
-	gdaoSlave.BindTable(DataSource.Mysql(), gdao.MYSQL, "hstest1", "hstest2")
-	hs := dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
-	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil {
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	logger.Debug("----------------------Bind the hstest1, hstest2 table to the slave data source mysql----------------------")
-	println()
-	gdaoSlave.UnbindTable("hstest1")
-	hs = dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
-	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil {
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	logger.Debug("----------------------gdaoslave unbinds the hstest1 table----------------------")
-}
-
 func TestDatasource(t *testing.T) {
 	gdao.BindDataSourceWithClass[dao.Hstest1](DataSource.Mysql(), gdao.MYSQL)
 	hs := dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
+	hs.Where(hs.ID.Between(0, 5))
+	hs.OrderBy(hs.ID.Desc())
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -493,8 +415,8 @@ func TestDatasource(t *testing.T) {
 	//unbind  data source
 	gdao.UnbindDataSourceWithClass[dao.Hstest1]()
 	hs = dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
+	hs.Where(hs.ID.Between(0, 5))
+	hs.OrderBy(hs.ID.Desc())
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -506,8 +428,8 @@ func TestDatasource(t *testing.T) {
 func TestDatasource2(t *testing.T) {
 	gdao.BindDataSource(DataSource.Mysql(), gdao.MYSQL, "hstest1")
 	hs := dao.NewHstest1()
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
+	hs.Where(hs.ID.Between(0, 5))
+	hs.OrderBy(hs.ID.Desc())
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
@@ -518,8 +440,8 @@ func TestDatasource2(t *testing.T) {
 	gdao.UnbindDataSource("hstest1")
 	hs = dao.NewHstest1()
 	hs.UseDBHandle(gdao.NewDBHandle(DataSource.Mysql(), gdao.MYSQL))
-	hs.Where(hs.Id.Between(0, 5))
-	hs.OrderBy(hs.Id.Desc())
+	hs.Where(hs.ID.Between(0, 5))
+	hs.OrderBy(hs.ID.Desc())
 	hs.Limit(3)
 	if hslist, err := hs.Selects(); err == nil {
 		for _, hs := range hslist {
