@@ -1,39 +1,29 @@
 package mapper
 
 import (
-	"fmt"
-	"github.com/donnie4w/gdao"
 	"github.com/donnie4w/gdao/gdaoMapper"
-	"github.com/donnie4w/gdaodemo"
 	"github.com/donnie4w/gdaodemo/dao"
-	"path/filepath"
+	"github.com/donnie4w/go-logger/logger"
 	"testing"
 )
-
-func init() {
-	gdaodemo.RootDir = "../../"
-	gdaoMapper.Builder(filepath.Join(gdaodemo.RootDir, "dynamic.xml"))
-	gdao.Init(gdaodemo.DataSource.Sqlite(), gdao.SQLITE)
-}
 
 func Test_demo1(t *testing.T) {
 	hs := dao.NewHstest()
 	hs.SetId(12)
 	database := gdaoMapper.SelectBean("dynamic.demo1", hs)
-	fmt.Println(database)
+	logger.Debug(database.GetError())
 }
 
 func Test_demo2(t *testing.T) {
-	hs := dao.NewHstest()
-	hs.SetId(12)
+	hs := &dao.Hs1{Id: 12}
 	database := gdaoMapper.SelectBean("dynamic.demo2", hs)
-	fmt.Println(database)
+	logger.Debug(database)
 }
 
 func Test_demo3(t *testing.T) {
 	as := []int{11, 12, 13, 14, 15}
 	database := gdaoMapper.SelectBean("dynamic.demo3", as)
-	fmt.Println(database)
+	logger.Debug(database)
 }
 
 func Test_demo4_1(t *testing.T) {
@@ -46,7 +36,7 @@ func Test_demo4_1(t *testing.T) {
 	nodes := []*dao.Hstest{hs, hs2, hs3}
 	m := map[string][]*dao.Hstest{"hstest": nodes}
 	database := gdaoMapper.SelectBean("dynamic.demo4", m)
-	fmt.Println(database)
+	logger.Debug(database)
 }
 
 func Test_demo4_2(t *testing.T) {
@@ -56,17 +46,17 @@ func Test_demo4_2(t *testing.T) {
 	nodes := []*dao.Hs1{hs, hs1, hs2}
 	m := map[string][]*dao.Hs1{"hstest": nodes}
 	database := gdaoMapper.SelectBean("dynamic.demo4", m)
-	fmt.Println(database)
+	logger.Debug(database)
 }
 
 func Test_demo5_1(t *testing.T) {
 	database := gdaoMapper.SelectBean("dynamic.demo5", []int{11, 12, 13, 14, 15, 16, 17, 18, 19, 20})
-	fmt.Println(database)
+	logger.Debug(database)
 }
 
 func Test_demo5_2(t *testing.T) {
 	database := gdaoMapper.SelectBean("dynamic.demo5", 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
-	fmt.Println(database)
+	logger.Debug(database)
 }
 
 func Test_demo6(t *testing.T) {
@@ -74,5 +64,5 @@ func Test_demo6(t *testing.T) {
 	m["rowname"] = "hello"
 	m["id"] = 11
 	database := gdaoMapper.SelectBean("dynamic.demo6", m)
-	fmt.Println(database)
+	logger.Debug(database)
 }
