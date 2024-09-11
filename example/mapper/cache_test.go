@@ -2,21 +2,15 @@ package mapper
 
 import (
 	"fmt"
-	"github.com/donnie4w/gdao"
 	"github.com/donnie4w/gdao/gdaoCache"
 	"github.com/donnie4w/gdao/gdaoMapper"
-	"github.com/donnie4w/gdaodemo"
 	"github.com/donnie4w/gdaodemo/dao"
 	"testing"
 )
 
-func init() {
-	gdao.SetLogger(true)
-	gdaodemo.RootDir = "../../"
-}
-
 func Test_mapper_selectcache(t *testing.T) {
-	gdaoCache.BindMapperId("user", "selectHstest1")
+	//gdaoCache.BindMapperId("user", "selectHstest1")
+	gdaoCache.BindMapper("user")
 	if hs1, err := gdaoMapper.Select[dao.Hstest1]("user.selectHstest1", 1); err == nil {
 		fmt.Println(hs1)
 	} else {
@@ -41,7 +35,8 @@ func Test_mapper_selectcache(t *testing.T) {
 }
 
 func Test_mapper_selectcachehandle(t *testing.T) {
-	gdaoCache.BindMapperWithCacheHandle("user", gdaoCache.NewCacheHandle().SetExpire(100))
+	//gdaoCache.BindMapperWithCacheHandle("user", gdaoCache.NewCacheHandle().SetExpire(100))
+	gdaoCache.BindMapper("user")
 	mapper := gdaoMapper.NewInstance()
 	if db := mapper.SelectBean("user.selectHstest1", 1); db.GetError() == nil {
 		fmt.Println(db)
