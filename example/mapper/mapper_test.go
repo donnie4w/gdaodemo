@@ -6,16 +6,8 @@ import (
 	"github.com/donnie4w/gdao/gdaoMapper"
 	"github.com/donnie4w/gdaodemo"
 	"github.com/donnie4w/gdaodemo/dao"
-	"path/filepath"
 	"testing"
 )
-
-func init() {
-	gdao.SetLogger(true)
-	gdaodemo.RootDir = "../../"
-	gdaoMapper.Builder(filepath.Join(gdaodemo.RootDir, "mapper.xml"))
-	gdaoMapper.Builder(filepath.Join(gdaodemo.RootDir, "mapper2.xml"))
-}
 
 func Test_selectHstest1_1(t *testing.T) {
 	hs1, err := gdaoMapper.Select[dao.Hstest1]("user.selectHstest1", 1)
