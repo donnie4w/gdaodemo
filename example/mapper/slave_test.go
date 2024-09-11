@@ -10,11 +10,6 @@ import (
 	"testing"
 )
 
-func init() {
-	gdao.SetLogger(true)
-	gdaodemo.RootDir = "../../"
-}
-
 // Read-write separation example 读写分离示例
 func Test_mapper_slave(t *testing.T) {
 	if hs1, err := gdaoMapper.Select[dao.Hstest1]("user.selectHstest1", 1); err == nil {
