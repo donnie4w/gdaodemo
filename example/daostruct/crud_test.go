@@ -3,6 +3,7 @@ package gdaodemo
 import (
 	"fmt"
 	"github.com/donnie4w/gdao"
+	"github.com/donnie4w/gdao/base"
 	"github.com/donnie4w/gdaodemo"
 	"github.com/donnie4w/gdaodemo/dao"
 	"github.com/donnie4w/go-logger/logger"
@@ -13,14 +14,14 @@ import (
 func init() {
 	logger.SetFormatter("{time}>>> {message}\n")
 	gdaodemo.RootDir = "../../"
-	gdao.Init(gdaodemo.DataSource.Sqlite(), gdao.SQLITE)
+	gdao.Init(gdaodemo.DataSource.PostgrepSql(), gdao.POSTGRESQL)
 	gdao.SetLogger(true)
 }
 
 func TestSelect(t *testing.T) {
 	hs := dao.NewHstest()
-	hs.Where(hs.ID.EQ(3))
-	h, err := hs.Select(hs.ID, hs.VALUE, hs.ROWNAME)
+	hs.Where(hs.ID.IN(5, 4, 3), hs.ID.LT(10))
+	h, err := hs.Select()
 	logger.Debug(h, err)
 }
 
@@ -31,6 +32,13 @@ func TestSelect2(t *testing.T) {
 	for _, h := range hslist {
 		logger.Debug(h)
 	}
+}
+
+func TestSelect3(t *testing.T) {
+	hs := dao.NewHstest()
+	hs.Where(hs.ID.IN(5, 4, 3))
+	h, err := hs.Select(base.Col("1"))
+	logger.Debug(h, err)
 }
 
 func TestUpdate(t *testing.T) {
@@ -191,32 +199,6 @@ func TestDatasource(t *testing.T) {
 	//unbind  data source
 	gdao.UnbindDataSourceWithClass[dao.Hstest1]()
 	hs = dao.NewHstest1()
-	hs.Where(hs.ID.Between(0, 5))
-	hs.OrderBy(hs.ID.Desc())
-	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil {
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-}
-
-// 表名绑定数据源
-func TestDatasource2(t *testing.T) {
-	gdao.BindDataSource(gdaodemo.DataSource.Mysql(), gdao.MYSQL, "hstest1")
-	hs := dao.NewHstest1()
-	hs.Where(hs.ID.Between(0, 5))
-	hs.OrderBy(hs.ID.Desc())
-	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil {
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	//unbind  data source
-	gdao.UnbindDataSource("hstest1")
-	hs = dao.NewHstest1()
-	hs.UseDBHandle(gdao.NewDBHandle(gdaodemo.DataSource.Mysql(), gdao.MYSQL))
 	hs.Where(hs.ID.Between(0, 5))
 	hs.OrderBy(hs.ID.Desc())
 	hs.Limit(3)
