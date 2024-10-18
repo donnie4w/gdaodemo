@@ -7,6 +7,21 @@ import (
 	"testing"
 )
 
+func Test_Append(t *testing.T) {
+	bean := NewSqlBuilder().Append("SELECT * FROM hstest where").
+		Append("id=?", 11).
+		Append("and rowname<>?", "hello").SelectOne()
+	logger.Debug(bean)
+}
+
+func Test_AppendScan(t *testing.T) {
+	var hs dao.Hstest
+	NewSqlBuilder().Append("SELECT * FROM hstest where").
+		Append("id=?", 11).
+		Append("and rowname<>?", "hello").SelectOne().Scan(&hs)
+	logger.Debug(&hs)
+}
+
 // 动态SQL 示例
 // dynamic sql examples
 
