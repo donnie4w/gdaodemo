@@ -46,5 +46,16 @@ func Test_buildDirWithTables(t *testing.T) {
 			fmt.Println(err)
 		}
 	}
+}
 
+// gdaoBuidler test
+func Test_buildDirWithTablesTag(t *testing.T) {
+	db := gdaodemo.DataSource.Sqlite()
+	tables := []string{"hstest", "hstest1", "hstest2", "hstest3"}
+
+	for _, table := range tables {
+		if err := gdaoBuilder.BuildDirWithAliasAndTAG("", table, "", "h2", "hstest", "dao", db); err != nil {
+			fmt.Println(err)
+		}
+	}
 }
