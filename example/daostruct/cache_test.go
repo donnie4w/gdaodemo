@@ -69,3 +69,40 @@ func TestCacheClass(t *testing.T) {
 	}
 	logger.Debug("----------------------Set Cache Again----------------------")
 }
+
+func TestExpireWrite(t *testing.T) {
+	gdaoCache.BindExpireWriteClassWithCacheHandle[*dao.Hstest](gdaoCache.NewCacheHandle().SetExpire(100).SetStoreMode(gdaoCache.STRONG)) //set cache for Hstest
+	hs := dao.NewHstest()
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
+	hs.Limit(3)
+	if hslist, err := hs.Selects(); err == nil { //第一次查询，缓冲池没有数据，则结果集放入缓冲池
+		for _, hs := range hslist {
+			logger.Debug(hs)
+		}
+	}
+	logger.Debug("----------------------Set Cache----------------------")
+	println()
+	hs = dao.NewHstest()
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
+	hs.Limit(3)
+	if hslist, err := hs.Selects(); err == nil { //第二次查询，缓冲池有数据，则返回缓存数据
+		for _, hs := range hslist {
+			logger.Debug(hs)
+		}
+	}
+	logger.Debug("----------------------Get Cache----------------------")
+	hs = dao.NewHstest()
+	hs.OrderBy(hs.ID.Desc()).Limit(1)
+	hs, _ = hs.Select()
+	hs.Insert()
+	logger.Debug("----------------------Insert Data----------------------")
+	println()
+	hs = dao.NewHstest()
+	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
+	hs.Limit(3)
+	if hslist, err := hs.Selects(); err == nil { //第二次查询，缓冲池有数据，则返回缓存数据
+		for _, hs := range hslist {
+			logger.Debug(hs)
+		}
+	}
+}
