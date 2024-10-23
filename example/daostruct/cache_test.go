@@ -37,7 +37,7 @@ func TestCacheTablename(t *testing.T) {
 }
 
 func TestCacheClass(t *testing.T) {
-	gdaoCache.BindClassWithCacheHandle[*dao.Hstest](gdaoCache.NewCacheHandle().SetExpire(100).SetStoreMode(gdaoCache.STRONG)) //set cache for Hstest
+	gdaoCache.BindClassWithCacheHandle[dao.Hstest](gdaoCache.NewCacheHandle().SetExpire(100).SetStoreMode(gdaoCache.STRONG)) //set cache for Hstest
 	hs := dao.NewHstest()
 	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
@@ -71,38 +71,21 @@ func TestCacheClass(t *testing.T) {
 }
 
 func TestExpireWrite(t *testing.T) {
-	gdaoCache.BindExpireWriteClassWithCacheHandle[*dao.Hstest](gdaoCache.NewCacheHandle().SetExpire(100).SetStoreMode(gdaoCache.STRONG)) //set cache for Hstest
+	gdaoCache.BindExpireWriteClass[dao.Hstest]() //set cache for Hstest
 	hs := dao.NewHstest()
 	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil { //第一次查询，缓冲池没有数据，则结果集放入缓冲池
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	logger.Debug("----------------------Set Cache----------------------")
+	hs.Selects() //第一次查询，缓冲池没有数据，则结果集放入缓冲池
 	println()
 	hs = dao.NewHstest()
 	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil { //第二次查询，缓冲池有数据，则返回缓存数据
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
-	logger.Debug("----------------------Get Cache----------------------")
-	hs = dao.NewHstest()
-	hs.OrderBy(hs.ID.Desc()).Limit(1)
-	hs, _ = hs.Select()
-	hs.Insert()
-	logger.Debug("----------------------Insert Data----------------------")
+	hss, _ := hs.Selects() //第二次查询，缓冲池有数据，返回缓存数据
+	println()
+	hss[0].Insert() //新增一条数据；发生增删改操作，清除dao.Hstest类的所有缓存
 	println()
 	hs = dao.NewHstest()
 	hs.Where((hs.ID.Between(0, 2)).Or(hs.ID.Between(10, 15)))
 	hs.Limit(3)
-	if hslist, err := hs.Selects(); err == nil { //第二次查询，缓冲池有数据，则返回缓存数据
-		for _, hs := range hslist {
-			logger.Debug(hs)
-		}
-	}
+	hs.Selects() //第三次查询，缓冲池已经清空数据，结果集重新放入缓冲池
 }
